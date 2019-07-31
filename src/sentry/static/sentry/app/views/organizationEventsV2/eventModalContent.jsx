@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'react-emotion';
-import {get} from 'lodash';
 
 import SentryTypes from 'app/sentryTypes';
 import DateTime from 'app/components/dateTime';
@@ -52,7 +51,7 @@ const EventModalContent = props => {
           })}
       </HeaderBox>
       <ContentColumn>
-        {get(event, 'type') === 'transaction' ? (
+        {event.type === 'transaction' ? (
           <TransanctionView event={event} />
         ) : (
           <EventInterfaces event={event} projectId={projectId} />
