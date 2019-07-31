@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'react-emotion';
+import {get} from 'lodash';
 
 import SentryTypes from 'app/sentryTypes';
 import DateTime from 'app/components/dateTime';
@@ -17,6 +18,7 @@ import ModalPagination from './modalPagination';
 import ModalLineGraph from './modalLineGraph';
 import RelatedEvents from './relatedEvents';
 import TagsTable from './tagsTable';
+import TransanctionView from './transactionView';
 
 /**
  * Render the columns and navigation elements inside the event modal view.
@@ -50,7 +52,11 @@ const EventModalContent = props => {
           })}
       </HeaderBox>
       <ContentColumn>
-        <EventInterfaces event={event} projectId={projectId} />
+        {get(event, 'type') === 'transaction' ? (
+          <TransanctionView event={event} />
+        ) : (
+          <EventInterfaces event={event} projectId={projectId} />
+        )}
       </ContentColumn>
       <SidebarColumn>
         {event.groupID && (
