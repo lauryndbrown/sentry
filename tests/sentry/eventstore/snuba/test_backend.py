@@ -13,7 +13,7 @@ class SnubaEventStorageTest(TestCase, SnubaTestCase):
         min_ago = (timezone.now() - timedelta(minutes=1)).isoformat()[:19]
         five_min_ago = (timezone.now() - timedelta(minutes=5)).isoformat()[:19]
 
-        self.event1 = self.store_event(
+        self.store_event(
             data={
                 'event_id': 'a' * 32,
                 'type': 'default',
@@ -23,7 +23,7 @@ class SnubaEventStorageTest(TestCase, SnubaTestCase):
             },
             project_id=self.project.id,
         )
-        self.event2 = self.store_event(
+        self.store_event(
             data={
                 'event_id': 'b' * 32,
                 'type': 'default',
