@@ -213,9 +213,10 @@ class Span extends React.Component<PropType, State> {
             style={{
               left: 0,
               width: toPercent(dividerPosition),
-              backgroundColor: spanBarColour,
             }}
-          />
+          >
+            {this.renderTitle({warningText})}
+          </SpanRowCell>
           <SpanRowCell
             style={{
               left: toPercent(dividerPosition),
@@ -230,7 +231,6 @@ class Span extends React.Component<PropType, State> {
                 width: toPercent(spanWidth),
               }}
             />
-            {this.renderTitle({warningText})}
             <Duration>{durationString}</Duration>
           </SpanRowCell>
           {ghostDivider}
@@ -303,6 +303,8 @@ const SpanRowCell = styled('div')`
   position: absolute;
 
   height: ${SPAN_ROW_HEIGHT}px;
+
+  overflow: hidden;
 `;
 
 export const DividerLine = styled('div')`
