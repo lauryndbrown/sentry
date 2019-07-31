@@ -309,7 +309,7 @@ export const DividerLine = styled('div')`
   position: absolute;
   height: ${SPAN_ROW_HEIGHT}px;
 
-  width: 1px;
+  width: 2px;
   transform: translateX(-50%);
 
   background-color: #cdc7d5;
