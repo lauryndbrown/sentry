@@ -192,6 +192,9 @@ class Span extends React.Component<PropType, State> {
       <DividerLine
         style={{
           left: toPercent(dividerPosition),
+          // we would like to hide the divider line when the span details
+          // has been expanded
+          display: this.state.displayDetail ? 'none' : undefined,
         }}
         hovering={true}
       />
@@ -241,6 +244,9 @@ class Span extends React.Component<PropType, State> {
               backgroundColor: this.props.dividerHandlerChildrenProps.isDragging
                 ? 'rgba(73,80,87,0.75)'
                 : void 0,
+              // we would like to hide the divider line when the span details
+              // has been expanded
+              display: this.state.displayDetail ? 'none' : undefined,
             }}
             hovering={
               this.props.dividerHandlerChildrenProps.dividerHandleHovering ||
