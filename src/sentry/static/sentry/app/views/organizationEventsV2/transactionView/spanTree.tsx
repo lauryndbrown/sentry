@@ -136,7 +136,7 @@ class SpanTree extends React.Component<PropType> {
       data: {},
     };
 
-    const COLORS = ['#e9e7f7', '#fcefde', '#fffbee', '#f1f5fb'];
+    const COLORS = ['#8B7FD7', '#F2BE7C', '#ffe066', '#74c0fc'];
     let current_index = 0;
 
     const pickSpanBarColour = () => {
