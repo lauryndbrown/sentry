@@ -557,8 +557,13 @@ const DurationGuideBox = styled('div')`
 
 const MinimapContainer = styled('div')`
   width: 100%;
-  position: relative;
+  position: sticky;
   left: 0;
+  top: 0;
+  z-index: 99999999999;
+
+  background-color: #fff;
+
   border-bottom: 1px solid #d1cad8;
 
   height: ${MINIMAP_HEIGHT + TIME_AXIS_HEIGHT + 1}px;

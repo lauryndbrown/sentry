@@ -324,7 +324,7 @@ export const DividerLine = styled('div')`
   transform: translateX(-50%);
 
   background-color: #cdc7d5;
-  z-index: 9999999999;
+  z-index: 999999;
 
   &:hover {
     width: 4px;
