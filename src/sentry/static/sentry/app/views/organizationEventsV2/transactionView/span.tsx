@@ -88,6 +88,7 @@ class Span extends React.Component<PropType, State> {
     return (
       <SpanTreeTogglerContainer style={{left: `${left}px`}}>
         <SpanTreeToggler
+          isExpanded={this.state.showSpanTree}
           onClick={event => {
             event.stopPropagation();
 
@@ -407,25 +408,49 @@ const SpanTreeToggler = styled('div')`
     flex-grow: 999;
   }
 
-  border-radius: 99px;
-  border: 1px solid #6e5f7d;
-
-  background: #fbfaf9;
   transition: all 0.15s ease-in-out;
+
+  border-radius: 99px;
+
+  ${({isExpanded}: {isExpanded: boolean}) => {
+    if (!isExpanded) {
+      return `
+      background: #6e5f7d;
+      border: 1px solid #452650;
+      color: #ffffff;
+      & svg path {
+        stroke: #ffffff;
+      }
+
+      &:hover {
+        background: #fbfaf9;
+        border: 1px solid #6e5f7d;
+        color: #6e5f7d;
+        & svg path {
+          stroke: #452650;
+        }
+      }
+      `;
+    }
+
+    return `
+      background: #fbfaf9;
+      border: 1px solid #6e5f7d;
+      color: #6e5f7d;
+
+      &:hover {
+        background: #6e5f7d;
+        border: 1px solid #452650;
+        color: #ffffff;
+        & svg path {
+          stroke: #ffffff;
+        }
+      }
+    `;
+  }};
 
   font-size: 9px;
   line-height: 0;
-  color: #6e5f7d;
-
-  &:hover {
-    background: #6e5f7d;
-    border: 1px solid #452650;
-    color: #ffffff;
-
-    & svg path {
-      stroke: #fff;
-    }
-  }
 `;
 
 const Duration = styled('div')`
