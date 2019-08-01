@@ -93,7 +93,7 @@ const Row = ({
     <tr>
       <td className="key">{title}</td>
       <td className="value">
-        <pre className="val ">
+        <pre className="val " style={{backgroundColor: '#F0ECF3'}}>
           <span className="val-string">{children}</span>
         </pre>
       </td>

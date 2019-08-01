@@ -194,7 +194,7 @@ class Span extends React.Component<PropType, State> {
           left: toPercent(dividerPosition),
           // we would like to hide the divider line when the span details
           // has been expanded
-          display: this.state.displayDetail ? 'none' : undefined,
+          display: this.state.displayDetail ? 'none' : void 0,
         }}
         hovering={true}
       />
@@ -217,6 +217,7 @@ class Span extends React.Component<PropType, State> {
             style={{
               left: 0,
               width: toPercent(dividerPosition),
+              backgroundColor: this.state.displayDetail ? '#F0ECF3' : void 0,
             }}
           >
             {this.renderTitle({warningText})}
@@ -225,6 +226,7 @@ class Span extends React.Component<PropType, State> {
             style={{
               left: toPercent(dividerPosition),
               width: toPercent(1 - dividerPosition),
+              backgroundColor: this.state.displayDetail ? '#F0ECF3' : void 0,
             }}
           >
             <SpanBar
