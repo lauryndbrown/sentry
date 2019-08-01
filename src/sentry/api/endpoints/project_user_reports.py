@@ -6,6 +6,7 @@ from django.utils import timezone
 from rest_framework import serializers
 from uuid import uuid4
 
+from sentry import eventstore
 from sentry.api.authentication import DSNAuthentication
 from sentry.api.base import DocSection, EnvironmentMixin
 from sentry.api.bases.project import ProjectEndpoint
@@ -148,7 +149,7 @@ class ProjectUserReportsEndpoint(ProjectEndpoint, EnvironmentMixin):
         if euser:
             report['event_user_id'] = euser.id
 
-        event = Event.objects.from_event_id(report['event_id'], project.id)
+        event = eventstore.get_event_by_id(project.id, report['event_id'])
         if not event:
             try:
                 report['group'] = Group.objects.from_event_id(project, report['event_id'])
@@ -198,7 +199,10 @@ class ProjectUserReportsEndpoint(ProjectEndpoint, EnvironmentMixin):
             if report_instance.group:
                 report_instance.notify()
 
-        user_feedback_received.send(project=report_instance.project, group=report_instance.group, sender=self)
+        user_feedback_received.send(
+            project=report_instance.project,
+            group=report_instance.group,
+            sender=self)
 
         return self.respond(serialize(report_instance, request.user, UserReportWithGroupSerializer(
             environment_func=self._get_environment_func(
