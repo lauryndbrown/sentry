@@ -174,6 +174,8 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
           onMouseDown={onLeftHandleDragStart}
           isDragging={false}
           opacity="0.5"
+          height="20px"
+          width="3px"
         />
       </g>
     ) : null;
@@ -193,6 +195,8 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
           x={toPercent(leftHandlePosition)}
           onMouseDown={onLeftHandleDragStart}
           isDragging={isDragging}
+          height="20px"
+          width="3px"
         />
       </g>
     );
@@ -212,6 +216,8 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
           x={toPercent(rightHandlePosition)}
           onMouseDown={onRightHandleDragStart}
           isDragging={isDragging}
+          height="20px"
+          width="3px"
         />
       </g>
     );
@@ -233,6 +239,8 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
           onMouseDown={onLeftHandleDragStart}
           isDragging={false}
           opacity="0.5"
+          height="20px"
+          width="3px"
         />
       </g>
     ) : null;
