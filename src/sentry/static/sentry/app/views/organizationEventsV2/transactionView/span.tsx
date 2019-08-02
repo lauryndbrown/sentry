@@ -54,7 +54,9 @@ class Span extends React.Component<PropType, State> {
 
   spanRowDOMRef = React.createRef<HTMLDivElement>();
   intersectionObserver?: IntersectionObserver = void 0;
-  resizeObserver?: any = void 0;
+
+  // TODO: remove this
+  // resizeObserver?: any = void 0;
 
   toggleSpanTree = () => {
     this.setState(state => {
@@ -349,21 +351,23 @@ class Span extends React.Component<PropType, State> {
     if (this.spanRowDOMRef.current) {
       this.connectObserver();
 
-      this.resizeObserver = new (window as any).ResizeObserver(() => {
-        console.log('resized');
-        this.connectObserver();
-      });
+      // TODO: remove this
+      // this.resizeObserver = new (window as any).ResizeObserver(() => {
+      //   console.log('resized');
+      //   this.connectObserver();
+      // });
 
-      this.resizeObserver.observe(this.spanRowDOMRef.current);
+      // this.resizeObserver.observe(this.spanRowDOMRef.current);
     }
   }
 
   componentWillUnmount() {
     this.disconnectObserver();
 
-    if (this.resizeObserver) {
-      this.resizeObserver.disconnect();
-    }
+    // TODO: remove this
+    // if (this.resizeObserver) {
+    //   this.resizeObserver.disconnect();
+    // }
   }
 
   render() {
