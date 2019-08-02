@@ -7,10 +7,6 @@ from sentry.utils import snuba
 from sentry.eventstore.base import EventStorage
 
 
-DEFAULT_START = datetime.utcfromtimestamp(0)  # will be clamped to project retention
-DEFAULT_END = datetime.utcnow()  # will be clamped to project retention
-
-
 class SnubaEventStorage(EventStorage):
     """
     Eventstore backend backed by Snuba
@@ -35,7 +31,7 @@ class SnubaEventStorage(EventStorage):
 
         return self.__get_next_or_prev_event_id(
             start=event.datetime,
-            end=DEFAULT_END,
+            end=datetime.utcnow(),
             conditions=conditions,
             filter_keys=filter_keys,
             orderby=['timestamp', 'event_id']
@@ -58,7 +54,7 @@ class SnubaEventStorage(EventStorage):
 
         return self.__get_next_or_prev_event_id(
             end=event.datetime,
-            start=DEFAULT_START,
+            start=datetime.utcfromtimestamp(0),
             conditions=conditions,
             filter_keys=filter_keys,
             orderby=['-timestamp', '-event_id']
