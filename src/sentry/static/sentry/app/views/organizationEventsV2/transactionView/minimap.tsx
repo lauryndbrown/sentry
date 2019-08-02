@@ -79,9 +79,9 @@ class Minimap extends React.Component<PropType, StateType> {
     isDragging,
     onLeftHandleDragStart,
     leftHandlePosition,
+    onRightHandleDragStart,
+    rightHandlePosition,
   }: // viewWindowStart,
-  // onRightHandleDragStart,
-  // rightHandlePosition,
   // viewWindowEnd,
   DragManagerChildrenProps) => {
     // const leftHandleGhost = isDragging ? (
@@ -139,6 +139,17 @@ class Minimap extends React.Component<PropType, StateType> {
       />
     );
 
+    const rightHandle = (
+      <ViewHandle
+        onMouseDown={onRightHandleDragStart}
+        isDragging={isDragging}
+        style={{
+          height: '20px',
+          left: toPercent(rightHandlePosition),
+        }}
+      />
+    );
+
     // const rightHandle = (
     //   <g>
     //     <line
@@ -186,6 +197,7 @@ class Minimap extends React.Component<PropType, StateType> {
     return (
       <React.Fragment>
         {leftHandle}
+        {rightHandle}
         {/* {rightHandleGhost}
         {leftHandle}
         {rightHandle} */}
@@ -643,20 +655,20 @@ const ViewHandle = styled('div')`
   ${({isDragging}: {isDragging: boolean}) => {
     if (isDragging) {
       return `
-      width: 5px;
-      transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
+      width: 6px;
+      transform: translate(-3px, ${MINIMAP_HEIGHT - 20}px);
       `;
     }
 
     return `
-    width: 3px;
-    transform: translate(-1.5px, ${MINIMAP_HEIGHT - 20}px);
+    width: 4px;
+    transform: translate(-2px, ${MINIMAP_HEIGHT - 20}px);
     `;
   }};
 
   &:hover {
-    width: 5px;
-    transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
+    width: 6px;
+    transform: translate(-3px, ${MINIMAP_HEIGHT - 20}px);
   }
 `;
 
@@ -684,7 +696,7 @@ const CursorGuide = styled('div')`
   width: 1px;
   background-color: #e03e2f;
 
-  transform: translateX(-0.5px);
+  transform: translateX(-50%);
 `;
 
 export default Minimap;
