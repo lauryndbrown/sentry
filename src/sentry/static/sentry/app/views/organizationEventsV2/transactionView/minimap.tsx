@@ -67,14 +67,10 @@ class Minimap extends React.Component<PropType, StateType> {
     );
 
     return (
-      <line
-        x1={`${mouseLeft}%`}
-        x2={`${mouseLeft}%`}
-        y1="0"
-        y2={MINIMAP_HEIGHT}
-        strokeWidth="1"
-        strokeOpacity="0.7"
-        style={{stroke: '#E03E2F'}}
+      <CursorGuide
+        style={{
+          left: `${mouseLeft}%`,
+        }}
       />
     );
   };
@@ -189,12 +185,13 @@ class Minimap extends React.Component<PropType, StateType> {
   renderFog = (dragProps: DragManagerChildrenProps) => {
     return (
       <React.Fragment>
-        <Fog x={0} y={0} height="100%" width={toPercent(dragProps.viewWindowStart)} />
+        <Fog style={{height: '100%', width: toPercent(dragProps.viewWindowStart)}} />
         <Fog
-          x={toPercent(dragProps.viewWindowEnd)}
-          y={0}
-          height="100%"
-          width={toPercent(1 - dragProps.viewWindowEnd)}
+          style={{
+            height: '100%',
+            width: toPercent(1 - dragProps.viewWindowEnd),
+            left: toPercent(dragProps.viewWindowEnd),
+          }}
         />
       </React.Fragment>
     );
@@ -615,11 +612,13 @@ const MinimapBackground = styled('div')`
   left: 0;
 `;
 
-const InteractiveLayer = styled('svg')`
+const InteractiveLayer = styled('div')`
   height: ${MINIMAP_HEIGHT}px;
   width: 100%;
   position: relative;
   left: 0;
+
+  display: flex;
 `;
 
 const ViewHandle = styled('rect')`
@@ -649,8 +648,10 @@ const ViewHandle = styled('rect')`
   }
 `;
 
-const Fog = styled('rect')`
-  fill: rgba(241, 245, 251, 0.5);
+const Fog = styled('div')`
+  background-color: rgba(241, 245, 251, 0.5);
+  position: absolute;
+  top: 0;
 `;
 
 const MinimapSpanBar = styled('div')`
@@ -662,6 +663,16 @@ const MinimapSpanBar = styled('div')`
 
 const BackgroundSlider = styled('div')`
   position: relative;
+`;
+
+const CursorGuide = styled('div')`
+  position: absolute;
+  top: 0;
+  height: ${MINIMAP_HEIGHT}px;
+  width: 1px;
+  background-color: #e03e2f;
+
+  transform: translateX(-50%);
 `;
 
 export default Minimap;
