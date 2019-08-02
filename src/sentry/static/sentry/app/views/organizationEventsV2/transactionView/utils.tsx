@@ -9,7 +9,7 @@ type Rect = {
 };
 
 // get position of element relative to top/left of document
-const getOffsetOfElement = (element: HTMLElement) => {
+const getOffsetOfElement = (element: Element) => {
   // left and top are relative to viewport
   const {left, top} = element.getBoundingClientRect();
 
@@ -20,7 +20,7 @@ const getOffsetOfElement = (element: HTMLElement) => {
   return {x: left + scrollLeft, y: top + scrollTop};
 };
 
-export const rectOfContent = (element: HTMLElement): Rect => {
+export const rectOfContent = (element: Element): Rect => {
   const {x, y} = getOffsetOfElement(element);
 
   // offsets for the border and any scrollbars (clientLeft and clientTop),
@@ -35,6 +35,15 @@ export const rectOfContent = (element: HTMLElement): Rect => {
     y: y + contentOffsetTop,
     width: element.scrollWidth,
     height: element.scrollHeight,
+  };
+};
+
+export const rectOfViewport = (): Rect => {
+  return {
+    x: window.pageXOffset,
+    y: window.pageYOffset,
+    width: window.document.documentElement.clientWidth,
+    height: window.document.documentElement.clientHeight,
   };
 };
 

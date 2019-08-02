@@ -14,6 +14,7 @@ import {
 import {DragManagerChildrenProps} from './dragManager';
 import {ParsedTraceType, TickAlignment} from './types';
 
+export const MINIMAP_CONTAINER_HEIGHT = 106;
 const MINIMAP_HEIGHT = 75;
 const TIME_AXIS_HEIGHT = 30;
 
@@ -564,6 +565,8 @@ const DurationGuideBox = styled('div')`
 `;
 
 const MinimapContainer = styled('div')`
+  opacity: 0.3;
+
   width: 100%;
   position: sticky;
   left: 0;

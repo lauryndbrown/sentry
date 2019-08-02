@@ -8,12 +8,16 @@ import Count from 'app/components/count';
 import Tooltip from 'app/components/tooltip';
 
 import {SPAN_ROW_HEIGHT, SpanRow} from './styles';
+import {MINIMAP_CONTAINER_HEIGHT} from './minimap';
 
 import {
   toPercent,
   SpanBoundsType,
   SpanGeneratedBoundsType,
   getHumanDuration,
+  // rectOfElement,
+  // rectRelativeTo,
+  // rectOfViewport,
 } from './utils';
 import {SpanType} from './types';
 import {DividerHandlerManagerChildrenProps} from './dividerHandlerManager';
@@ -26,6 +30,7 @@ type PropType = {
   numOfSpanChildren: number;
   renderedSpanChildren: Array<JSX.Element>;
   spanBarColour: string;
+  spanNumber: number;
 
   dividerHandlerChildrenProps: DividerHandlerManagerChildrenProps;
 };
@@ -35,11 +40,21 @@ type State = {
   showSpanTree: boolean;
 };
 
+const INTERSECTION_THRESHOLDS: Array<number> = [];
+
+for (let i = 0; i <= 1.0; i += 0.01) {
+  INTERSECTION_THRESHOLDS.push(i);
+}
+
 class Span extends React.Component<PropType, State> {
   state: State = {
     displayDetail: false,
     showSpanTree: true,
   };
+
+  spanRowDOMRef = React.createRef<HTMLDivElement>();
+  intersectionObserver?: IntersectionObserver = void 0;
+  resizeObserver?: any = void 0;
 
   toggleSpanTree = () => {
     this.setState(state => {
@@ -202,6 +217,8 @@ class Span extends React.Component<PropType, State> {
 
     return (
       <SpanRow
+        innerRef={this.spanRowDOMRef}
+        data-span-number={String(this.props.spanNumber)}
         style={{
           display: isVisible ? 'block' : 'none',
 
@@ -271,6 +288,83 @@ class Span extends React.Component<PropType, State> {
       </SpanRow>
     );
   };
+
+  connectObserver = () => {
+    if (!this.spanRowDOMRef.current) {
+      return;
+    }
+
+    this.disconnectObserver();
+
+    this.intersectionObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          const spanNumber = entry.target.getAttribute('data-span-number');
+
+          // console.log('entry', entry, entry.target);
+
+          // root refers to the root intersection rectangle used for the IntersectionObserver
+          const rectRelativeToRoot = entry.boundingClientRect as DOMRect;
+
+          const bottomYCoord = rectRelativeToRoot.y + rectRelativeToRoot.height;
+
+          // refers to if the rect is out of view from the viewport
+          const isOutOfViewAbove = rectRelativeToRoot.y < 0 && bottomYCoord < 0;
+
+          if (isOutOfViewAbove) {
+            return;
+          }
+
+          const relativeToMinimap = {
+            top: rectRelativeToRoot.y - MINIMAP_CONTAINER_HEIGHT,
+            bottom: bottomYCoord - MINIMAP_CONTAINER_HEIGHT,
+          };
+
+          const rectBelowMinimap =
+            relativeToMinimap.top > 0 && relativeToMinimap.bottom > 0;
+
+          if (rectBelowMinimap || relativeToMinimap.bottom <= 0) {
+            return;
+          }
+
+          console.log('entry', spanNumber);
+        });
+      },
+      {
+        threshold: INTERSECTION_THRESHOLDS,
+        rootMargin: `-${MINIMAP_CONTAINER_HEIGHT}px 0px 0px 0px`,
+      }
+    );
+
+    this.intersectionObserver.observe(this.spanRowDOMRef.current);
+  };
+
+  disconnectObserver = () => {
+    if (this.intersectionObserver) {
+      this.intersectionObserver.disconnect();
+    }
+  };
+
+  componentDidMount() {
+    if (this.spanRowDOMRef.current) {
+      this.connectObserver();
+
+      this.resizeObserver = new (window as any).ResizeObserver(() => {
+        console.log('resized');
+        this.connectObserver();
+      });
+
+      this.resizeObserver.observe(this.spanRowDOMRef.current);
+    }
+  }
+
+  componentWillUnmount() {
+    this.disconnectObserver();
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    }
+  }
 
   render() {
     return (

@@ -15,6 +15,7 @@ import DividerHandlerManager, {
 
 type RenderedSpanTree = {
   spanTree: JSX.Element | null;
+  nextSpanNumber: number;
   numOfHiddenSpansAbove: number;
 };
 
@@ -26,6 +27,7 @@ type PropType = {
 
 class SpanTree extends React.Component<PropType> {
   renderSpan = ({
+    spanNumber,
     treeDepth,
     numOfHiddenSpansAbove,
     spanID,
@@ -36,6 +38,7 @@ class SpanTree extends React.Component<PropType> {
     pickSpanBarColour,
     dividerHandlerChildrenProps,
   }: {
+    spanNumber: number;
     treeDepth: number;
     numOfHiddenSpansAbove: number;
     spanID: string;
@@ -59,6 +62,7 @@ class SpanTree extends React.Component<PropType> {
 
     type AccType = {
       renderedSpanChildren: Array<JSX.Element>;
+      nextSpanNumber: number;
       numOfHiddenSpansAbove: number;
     };
 
@@ -67,6 +71,7 @@ class SpanTree extends React.Component<PropType> {
         const key = `${traceID}${spanChild.span_id}`;
 
         const results = this.renderSpan({
+          spanNumber: acc.nextSpanNumber,
           treeDepth: treeDepth + 1,
           numOfHiddenSpansAbove: acc.numOfHiddenSpansAbove,
           span: spanChild,
@@ -84,10 +89,13 @@ class SpanTree extends React.Component<PropType> {
 
         acc.numOfHiddenSpansAbove = results.numOfHiddenSpansAbove;
 
+        acc.nextSpanNumber = results.nextSpanNumber;
+
         return acc;
       },
       {
         renderedSpanChildren: [],
+        nextSpanNumber: spanNumber + 1,
         numOfHiddenSpansAbove: isCurrentSpanHidden ? numOfHiddenSpansAbove + 1 : 0,
       }
     );
@@ -104,10 +112,12 @@ class SpanTree extends React.Component<PropType> {
 
     return {
       numOfHiddenSpansAbove: reduced.numOfHiddenSpansAbove,
+      nextSpanNumber: reduced.nextSpanNumber,
       spanTree: (
         <React.Fragment>
           {hiddenSpansMessage}
           <Span
+            spanNumber={spanNumber}
             span={span}
             generateBounds={generateBounds}
             treeDepth={treeDepth}
@@ -156,6 +166,7 @@ class SpanTree extends React.Component<PropType> {
     });
 
     return this.renderSpan({
+      spanNumber: 1,
       treeDepth: 0,
       numOfHiddenSpansAbove: 0,
       span: rootSpan,
