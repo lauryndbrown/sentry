@@ -1,5 +1,7 @@
 import {isString, isNumber} from 'lodash';
 
+import {SpanType} from './types';
+
 type Rect = {
   // x and y are left/top coords respectively
   x: number;
@@ -180,4 +182,25 @@ export const generateSpanColourPicker = () => {
   };
 
   return pickSpanBarColour;
+};
+
+export enum TimestampStatus {
+  Stable,
+  Reversed,
+  Equal,
+}
+
+export const parseSpanTimestamps = (span: SpanType): TimestampStatus => {
+  const startTimestamp: number = span.start_timestamp;
+  const endTimestamp: number = span.timestamp;
+
+  if (startTimestamp < endTimestamp) {
+    return TimestampStatus.Stable;
+  }
+
+  if (startTimestamp === endTimestamp) {
+    return TimestampStatus.Equal;
+  }
+
+  return TimestampStatus.Reversed;
 };

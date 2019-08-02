@@ -8,16 +8,15 @@ import Count from 'app/components/count';
 import Tooltip from 'app/components/tooltip';
 
 import {SPAN_ROW_HEIGHT, SpanRow} from './styles';
-import {MINIMAP_CONTAINER_HEIGHT} from './minimap';
+import {MINIMAP_CONTAINER_HEIGHT, MINIMAP_SPAN_BAR_HEIGHT} from './minimap';
 
 import {
   toPercent,
   SpanBoundsType,
   SpanGeneratedBoundsType,
   getHumanDuration,
-  // rectOfElement,
-  // rectRelativeTo,
-  // rectOfViewport,
+  parseSpanTimestamps,
+  TimestampStatus,
 } from './utils';
 import {SpanType} from './types';
 import {DividerHandlerManagerChildrenProps} from './dividerHandlerManager';
@@ -343,9 +342,6 @@ class Span extends React.Component<PropType, State> {
             return;
           }
 
-          // TODO: move this
-          const MINIMAP_SPAN_BAR_HEIGHT = 5;
-
           // invariant: spanNumber >= 1
 
           const numberOfMovedSpans = spanNumber - 1;
@@ -405,27 +401,6 @@ class Span extends React.Component<PropType, State> {
     );
   }
 }
-
-enum TimestampStatus {
-  Stable,
-  Reversed,
-  Equal,
-}
-
-const parseSpanTimestamps = (span: SpanType): TimestampStatus => {
-  const startTimestamp: number = span.start_timestamp;
-  const endTimestamp: number = span.timestamp;
-
-  if (startTimestamp < endTimestamp) {
-    return TimestampStatus.Stable;
-  }
-
-  if (startTimestamp === endTimestamp) {
-    return TimestampStatus.Equal;
-  }
-
-  return TimestampStatus.Reversed;
-};
 
 const SpanRowCellContainer = styled('div')`
   position: relative;

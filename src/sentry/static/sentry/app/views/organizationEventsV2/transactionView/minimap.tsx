@@ -10,11 +10,17 @@ import {
   toPercent,
   getHumanDuration,
   generateSpanColourPicker,
+  boundsGenerator,
+  SpanBoundsType,
+  SpanGeneratedBoundsType,
+  parseSpanTimestamps,
+  TimestampStatus,
 } from './utils';
 import {DragManagerChildrenProps} from './dragManager';
 import {ParsedTraceType, TickAlignment, SpanType, SpanChildrenLookupType} from './types';
 
 export const MINIMAP_CONTAINER_HEIGHT = 106;
+export const MINIMAP_SPAN_BAR_HEIGHT = 5;
 const MINIMAP_HEIGHT = 75;
 const TIME_AXIS_HEIGHT = 30;
 
@@ -345,26 +351,55 @@ class Minimap extends React.Component<PropType, StateType> {
 
     const pickSpanBarColour = generateSpanColourPicker();
 
-    const rootSpan = {
-      pickSpanBarColour,
-      parent_span_id: void 0,
-      spanID: trace.rootSpanID,
-      lookup: trace.lookup,
+    const generateBounds = boundsGenerator({
+      traceStartTimestamp: trace.traceStartTimestamp,
+      traceEndTimestamp: trace.traceEndTimestamp,
+      viewStart: 0,
+      viewEnd: 1,
+    });
+
+    const rootSpan: SpanType = {
+      trace_id: trace.traceID,
+      span_id: trace.rootSpanID,
+      start_timestamp: trace.traceStartTimestamp,
+      timestamp: trace.traceEndTimestamp,
+      data: {},
     };
 
-    return this.renderSpan(rootSpan);
+    return this.renderSpan({
+      pickSpanBarColour,
+      generateBounds,
+      span: rootSpan,
+      spanID: trace.rootSpanID,
+      lookup: trace.lookup,
+    });
   };
 
   renderSpan = ({
     spanID,
     pickSpanBarColour,
     lookup,
+    generateBounds,
+    span,
   }: {
     spanID: string;
     pickSpanBarColour: () => string;
     lookup: Readonly<SpanChildrenLookupType>;
+    generateBounds: (bounds: SpanBoundsType) => SpanGeneratedBoundsType;
+    span: Readonly<SpanType>;
   }): JSX.Element => {
     const spanBarColour: string = pickSpanBarColour();
+
+    const bounds = generateBounds({
+      startTimestamp: span.start_timestamp,
+      endTimestamp: span.timestamp,
+    });
+
+    const timestampStatus = parseSpanTimestamps(span);
+
+    const spanLeft = timestampStatus === TimestampStatus.Stable ? bounds.start : 0;
+    const spanWidth =
+      timestampStatus === TimestampStatus.Stable ? bounds.end - bounds.start : 1;
 
     const spanChildren: Array<SpanType> = get(lookup, spanID, []);
 
@@ -377,6 +412,8 @@ class Minimap extends React.Component<PropType, StateType> {
         spanID: spanChild.span_id,
         lookup,
         pickSpanBarColour,
+        generateBounds,
+        span: spanChild,
       });
 
       acc.push(<React.Fragment key={key}>{results}</React.Fragment>);
@@ -386,7 +423,13 @@ class Minimap extends React.Component<PropType, StateType> {
 
     return (
       <React.Fragment>
-        <MinimapSpanBar style={{backgroundColor: spanBarColour}} />
+        <MinimapSpanBar
+          style={{
+            backgroundColor: spanBarColour,
+            left: toPercent(spanLeft),
+            width: toPercent(spanWidth),
+          }}
+        />
         {reduced}
       </React.Fragment>
     );
@@ -563,6 +606,8 @@ const MinimapContainer = styled('div')`
 
 const MinimapBackground = styled('div')`
   height: ${MINIMAP_HEIGHT}px;
+  max-height: ${MINIMAP_HEIGHT}px;
+  overflow: hidden;
   width: 100%;
   position: absolute;
   top: 0;
@@ -608,7 +653,10 @@ const Fog = styled('rect')`
 `;
 
 const MinimapSpanBar = styled('div')`
-  height: 5px;
+  position: relative;
+  height: ${MINIMAP_SPAN_BAR_HEIGHT}px;
+  min-height: ${MINIMAP_SPAN_BAR_HEIGHT}px;
+  max-height: ${MINIMAP_SPAN_BAR_HEIGHT}px;
 `;
 
 const BackgroundSlider = styled('div')`
