@@ -3,20 +3,15 @@ import {debounce} from 'lodash';
 import React from 'react';
 import styled from 'react-emotion';
 
-import {ReactEchartsRef} from 'app/types/echarts';
+import {ReactEchartsRef, Series, SeriesDataUnit} from 'app/types/echarts';
 import {Panel} from 'app/components/panels';
 import Graphic from 'app/components/charts/components/graphic';
 import LineChart from 'app/components/charts/lineChart';
 import space from 'app/styles/space';
 
-type DataArray = Array<[number, number]>;
-
 type Props = {
-  data: Array<{
-    seriesName: string;
-    dataArray: DataArray;
-  }>;
-  onChangeUpperBound: Function;
+  data: Series[];
+  onChangeUpperBound: (upperBound: number) => void;
   upperBound: number;
 };
 type State = {
@@ -24,8 +19,8 @@ type State = {
   yAxisMax: number | null;
 };
 
-const findMax = (data: DataArray): number =>
-  data.reduce((max, [_ts, number]) => (number > max ? number : max), 0);
+const findMax = (data: SeriesDataUnit[]): number =>
+  data.reduce((max, {value}) => (value > max ? value : max), 0);
 
 export default class IncidentRulesChart extends React.Component<Props, State> {
   static defaultProps = {
@@ -38,18 +33,24 @@ export default class IncidentRulesChart extends React.Component<Props, State> {
   };
 
   componentDidUpdate(prevProps: Props) {
-    const {data, upperBound} = this.props;
     if (
-      upperBound !== prevProps.upperBound &&
-      this.chartRef &&
-      data.length &&
-      data[0].dataArray
+      this.props.upperBound !== prevProps.upperBound ||
+      this.props.data !== prevProps.data
     ) {
-      this.updateChartAxis(upperBound, data[0].dataArray);
+      this.handleUpdateChartAxis();
     }
   }
 
   chartRef: null | ECharts = null;
+
+  // If we have ref to chart and data, try to update chart axis so that
+  // upperBound is visible in chart
+  handleUpdateChartAxis = () => {
+    const {data, upperBound} = this.props;
+    if (this.chartRef && data.length && data[0].data) {
+      this.updateChartAxis(upperBound, data[0].data);
+    }
+  };
 
   updateChartAxis = debounce((upperBound, dataArray) => {
     if (upperBound > findMax(dataArray)) {
@@ -76,6 +77,7 @@ export default class IncidentRulesChart extends React.Component<Props, State> {
     if (ref && typeof ref.getEchartsInstance === 'function' && !this.chartRef) {
       this.chartRef = ref.getEchartsInstance();
       const width = this.chartRef.getWidth();
+      this.handleUpdateChartAxis();
       if (width !== this.state.width) {
         this.setState({
           width,
