@@ -33,6 +33,8 @@ type PropType = {
   spanNumber: number;
 
   dividerHandlerChildrenProps: DividerHandlerManagerChildrenProps;
+
+  panMinimapVertically: (panYValue: number) => void;
 };
 
 type State = {
@@ -353,7 +355,7 @@ class Span extends React.Component<PropType, State> {
           const panYPixels =
             totalHeightOfHiddenSpans + currentSpanHiddenRatio * MINIMAP_SPAN_BAR_HEIGHT;
 
-          console.log('panYPixels', panYPixels);
+          this.props.panMinimapVertically(panYPixels);
         });
       },
       {

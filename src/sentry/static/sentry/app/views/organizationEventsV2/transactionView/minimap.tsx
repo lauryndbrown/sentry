@@ -23,6 +23,7 @@ type PropType = {
   minimapInteractiveRef: React.RefObject<HTMLDivElement>;
   dragProps: DragManagerChildrenProps;
   trace: ParsedTraceType;
+  panYMinimap: number;
 };
 
 type StateType = {
@@ -395,7 +396,11 @@ class Minimap extends React.Component<PropType, StateType> {
     return (
       <React.Fragment>
         <MinimapContainer>
-          <MinimapBackground>{this.drawMinimap()}</MinimapBackground>
+          <MinimapBackground>
+            <BackgroundSlider panYMinimap={this.props.panYMinimap}>
+              {this.drawMinimap()}
+            </BackgroundSlider>
+          </MinimapBackground>
           <div
             ref={this.props.minimapInteractiveRef}
             style={{
@@ -543,8 +548,6 @@ const DurationGuideBox = styled('div')`
 `;
 
 const MinimapContainer = styled('div')`
-  opacity: 0.3;
-
   width: 100%;
   position: sticky;
   left: 0;
@@ -556,8 +559,6 @@ const MinimapContainer = styled('div')`
   border-bottom: 1px solid #d1cad8;
 
   height: ${MINIMAP_HEIGHT + TIME_AXIS_HEIGHT + 1}px;
-
-  outline: 1px solid magenta;
 `;
 
 const MinimapBackground = styled('div')`
@@ -608,6 +609,14 @@ const Fog = styled('rect')`
 
 const MinimapSpanBar = styled('div')`
   height: 5px;
+`;
+
+const BackgroundSlider = styled('div')`
+  position: relative;
+
+  ${({panYMinimap}: {panYMinimap: number}) => {
+    return `transform: translateY(-${panYMinimap}px);`;
+  }};
 `;
 
 export default Minimap;

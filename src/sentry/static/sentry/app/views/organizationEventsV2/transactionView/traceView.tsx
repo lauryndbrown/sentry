@@ -22,6 +22,7 @@ type PropType = {
 
 type StateType = {
   renderMinimap: boolean;
+  panYMinimap: number;
 };
 
 class TraceView extends React.Component<PropType, StateType> {
@@ -30,6 +31,13 @@ class TraceView extends React.Component<PropType, StateType> {
 
   state: StateType = {
     renderMinimap: false,
+    panYMinimap: 0,
+  };
+
+  panMinimapVertically = (panYValue: number) => {
+    this.setState({
+      panYMinimap: panYValue,
+    });
   };
 
   componentDidMount() {
@@ -52,6 +60,7 @@ class TraceView extends React.Component<PropType, StateType> {
         minimapInteractiveRef={this.minimapInteractiveRef}
         dragProps={dragProps}
         trace={parsedTrace}
+        panYMinimap={this.state.panYMinimap}
       />
     );
   };
@@ -178,6 +187,7 @@ class TraceView extends React.Component<PropType, StateType> {
                 traceViewRef={this.traceViewRef}
                 trace={parsedTrace}
                 dragProps={dragProps}
+                panMinimapVertically={this.panMinimapVertically}
               />
             </React.Fragment>
           );

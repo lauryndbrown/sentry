@@ -28,6 +28,7 @@ type PropType = {
   traceViewRef: React.RefObject<HTMLDivElement>;
   trace: ParsedTraceType;
   dragProps: DragManagerChildrenProps;
+  panMinimapVertically: (panYValue: number) => void;
 };
 
 class SpanTree extends React.Component<PropType> {
@@ -130,6 +131,7 @@ class SpanTree extends React.Component<PropType> {
             renderedSpanChildren={reduced.renderedSpanChildren}
             spanBarColour={spanBarColour}
             dividerHandlerChildrenProps={dividerHandlerChildrenProps}
+            panMinimapVertically={this.props.panMinimapVertically}
           />
         </React.Fragment>
       ),
