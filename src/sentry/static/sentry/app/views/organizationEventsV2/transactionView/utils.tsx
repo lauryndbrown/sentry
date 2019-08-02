@@ -165,3 +165,19 @@ export const getHumanDuration = (duration: number): string => {
   const durationMS = duration * 1000;
   return `${durationMS.toFixed(3)} ms`;
 };
+
+export const generateSpanColourPicker = () => {
+  const COLORS = ['#8B7FD7', '#F2BE7C', '#ffe066', '#74c0fc'];
+  let current_index = 0;
+
+  const pickSpanBarColour = () => {
+    const next_colour = COLORS[current_index];
+
+    current_index++;
+    current_index = current_index % COLORS.length;
+
+    return next_colour;
+  };
+
+  return pickSpanBarColour;
+};

@@ -5,7 +5,12 @@ import {get} from 'lodash';
 import {t} from 'app/locale';
 
 import {SpanType, SpanChildrenLookupType, ParsedTraceType} from './types';
-import {boundsGenerator, SpanBoundsType, SpanGeneratedBoundsType} from './utils';
+import {
+  boundsGenerator,
+  SpanBoundsType,
+  SpanGeneratedBoundsType,
+  generateSpanColourPicker,
+} from './utils';
 import {DragManagerChildrenProps} from './dragManager';
 import Span from './span';
 import {SpanRowMessage} from './styles';
@@ -138,7 +143,6 @@ class SpanTree extends React.Component<PropType> {
 
     const rootSpan: SpanType = {
       trace_id: trace.traceID,
-      parent_span_id: void 0,
       span_id: trace.rootSpanID,
       start_timestamp: trace.traceStartTimestamp,
       timestamp: trace.traceEndTimestamp,
@@ -146,17 +150,7 @@ class SpanTree extends React.Component<PropType> {
       data: {},
     };
 
-    const COLORS = ['#8B7FD7', '#F2BE7C', '#ffe066', '#74c0fc'];
-    let current_index = 0;
-
-    const pickSpanBarColour = () => {
-      const next_colour = COLORS[current_index];
-
-      current_index++;
-      current_index = current_index % COLORS.length;
-
-      return next_colour;
-    };
+    const pickSpanBarColour = generateSpanColourPicker();
 
     const generateBounds = boundsGenerator({
       traceStartTimestamp: trace.traceStartTimestamp,

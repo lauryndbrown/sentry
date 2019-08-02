@@ -2,10 +2,17 @@ import React from 'react';
 import styled from 'react-emotion';
 
 import space from 'app/styles/space';
+import {get} from 'lodash';
 
-import {rectOfContent, clamp, toPercent, getHumanDuration} from './utils';
+import {
+  rectOfContent,
+  clamp,
+  toPercent,
+  getHumanDuration,
+  generateSpanColourPicker,
+} from './utils';
 import {DragManagerChildrenProps} from './dragManager';
-import {ParsedTraceType, TickAlignment} from './types';
+import {ParsedTraceType, TickAlignment, SpanType, SpanChildrenLookupType} from './types';
 
 export const MINIMAP_CONTAINER_HEIGHT = 106;
 const MINIMAP_HEIGHT = 75;
@@ -328,11 +335,67 @@ class Minimap extends React.Component<PropType, StateType> {
     );
   };
 
+  drawMinimap = () => {
+    return this.renderRootSpan();
+  };
+
+  renderRootSpan = () => {
+    const {trace} = this.props;
+
+    const pickSpanBarColour = generateSpanColourPicker();
+
+    const rootSpan = {
+      pickSpanBarColour,
+      parent_span_id: void 0,
+      spanID: trace.rootSpanID,
+      lookup: trace.lookup,
+    };
+
+    return this.renderSpan(rootSpan);
+  };
+
+  renderSpan = ({
+    spanID,
+    pickSpanBarColour,
+    lookup,
+  }: {
+    spanID: string;
+    pickSpanBarColour: () => string;
+    lookup: Readonly<SpanChildrenLookupType>;
+  }): JSX.Element => {
+    const spanBarColour: string = pickSpanBarColour();
+
+    const spanChildren: Array<SpanType> = get(lookup, spanID, []);
+
+    type AccType = Array<JSX.Element>;
+
+    const reduced: AccType = spanChildren.reduce((acc: AccType, spanChild) => {
+      const key = `${spanChild.span_id}`;
+
+      const results = this.renderSpan({
+        spanID: spanChild.span_id,
+        lookup,
+        pickSpanBarColour,
+      });
+
+      acc.push(<React.Fragment key={key}>{results}</React.Fragment>);
+
+      return acc;
+    }, []);
+
+    return (
+      <React.Fragment>
+        <MinimapSpanBar style={{backgroundColor: spanBarColour}} />
+        {reduced}
+      </React.Fragment>
+    );
+  };
+
   render() {
     return (
       <React.Fragment>
         <MinimapContainer>
-          <MinimapBackground />
+          <MinimapBackground>{this.drawMinimap()}</MinimapBackground>
           <div
             ref={this.props.minimapInteractiveRef}
             style={{
@@ -497,7 +560,7 @@ const MinimapContainer = styled('div')`
   outline: 1px solid magenta;
 `;
 
-const MinimapBackground = styled('canvas')`
+const MinimapBackground = styled('div')`
   height: ${MINIMAP_HEIGHT}px;
   width: 100%;
   position: absolute;
@@ -541,6 +604,10 @@ const ViewHandle = styled('rect')`
 
 const Fog = styled('rect')`
   fill: rgba(241, 245, 251, 0.5);
+`;
+
+const MinimapSpanBar = styled('div')`
+  height: 5px;
 `;
 
 export default Minimap;
