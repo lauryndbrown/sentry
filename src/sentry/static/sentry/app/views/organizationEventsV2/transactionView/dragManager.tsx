@@ -15,13 +15,13 @@ export type DragManagerChildrenProps = {
 
   // left-side handle
 
-  onLeftHandleDragStart: (event: React.MouseEvent<SVGRectElement, MouseEvent>) => void;
+  onLeftHandleDragStart: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   leftHandlePosition: number; // between 0 to 1
   viewWindowStart: number; // between 0 to 1
 
   // right-side handle
 
-  onRightHandleDragStart: (event: React.MouseEvent<SVGRectElement, MouseEvent>) => void;
+  onRightHandleDragStart: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
   rightHandlePosition: number; // between 0 to 1
   viewWindowEnd: number; // between 0 to 1
 };
@@ -59,7 +59,7 @@ class DragManager extends React.Component<DragManagerProps, DragManagerState> {
   };
 
   onDragStart = (viewHandle: ViewHandleType) => (
-    event: React.MouseEvent<SVGRectElement, MouseEvent>
+    event: React.MouseEvent<HTMLDivElement, MouseEvent>
   ) => {
     if (
       this.state.isDragging ||
@@ -88,11 +88,11 @@ class DragManager extends React.Component<DragManagerProps, DragManagerState> {
     });
   };
 
-  onLeftHandleDragStart = (event: React.MouseEvent<SVGRectElement, MouseEvent>) => {
+  onLeftHandleDragStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     this.onDragStart(ViewHandleType.Left)(event);
   };
 
-  onRightHandleDragStart = (event: React.MouseEvent<SVGRectElement, MouseEvent>) => {
+  onRightHandleDragStart = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     this.onDragStart(ViewHandleType.Right)(event);
   };
 
