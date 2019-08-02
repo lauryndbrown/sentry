@@ -3,14 +3,7 @@ import styled from 'react-emotion';
 
 import space from 'app/styles/space';
 
-import {
-  rectOfContent,
-  clamp,
-  rectRelativeTo,
-  rectOfElement,
-  toPercent,
-  getHumanDuration,
-} from './utils';
+import {rectOfContent, clamp, toPercent, getHumanDuration} from './utils';
 import {DragManagerChildrenProps} from './dragManager';
 import {ParsedTraceType, TickAlignment} from './types';
 
@@ -18,102 +11,24 @@ export const MINIMAP_CONTAINER_HEIGHT = 106;
 const MINIMAP_HEIGHT = 75;
 const TIME_AXIS_HEIGHT = 30;
 
-type MinimapProps = {
+type PropType = {
   traceViewRef: React.RefObject<HTMLDivElement>;
   minimapInteractiveRef: React.RefObject<HTMLDivElement>;
   dragProps: DragManagerChildrenProps;
   trace: ParsedTraceType;
 };
 
-type MinimapState = {
+type StateType = {
   showCursorGuide: boolean;
   mousePageX: number | undefined;
   startViewHandleX: number;
 };
 
-class Minimap extends React.Component<MinimapProps, MinimapState> {
-  state: MinimapState = {
+class Minimap extends React.Component<PropType, StateType> {
+  state: StateType = {
     showCursorGuide: false,
     mousePageX: void 0,
     startViewHandleX: 100,
-  };
-
-  minimapRef = React.createRef<HTMLCanvasElement>();
-
-  componentDidMount() {
-    this.drawMinimap();
-  }
-
-  drawMinimap = () => {
-    const canvas = this.minimapRef.current;
-    const traceViewDOM = this.props.traceViewRef.current;
-
-    if (!canvas || !traceViewDOM) {
-      return;
-    }
-
-    const canvasContext = canvas.getContext('2d');
-
-    if (!canvasContext) {
-      return;
-    }
-
-    const rootRect = rectOfContent(traceViewDOM);
-
-    const scaleX = canvas.clientWidth / rootRect.width;
-    const scaleY = canvas.clientHeight / rootRect.height;
-
-    // https://www.html5rocks.com/en/tutorials/canvas/hidpi/
-    // we consider the devicePixelRatio (dpr) factor so that the canvas looks decent on hidpi screens
-    // such as retina macbooks
-    const devicePixelRatio = window.devicePixelRatio || 1;
-
-    const resizeCanvas = (width: number, height: number) => {
-      // scale the canvas up by the dpr factor
-      canvas.width = width * devicePixelRatio;
-      canvas.height = height * devicePixelRatio;
-
-      // scale the canvas down by the dpr factor thru CSS
-      canvas.style.width = '100%';
-      canvas.style.height = `${height}px`;
-    };
-
-    resizeCanvas(rootRect.width * scaleX, rootRect.height * scaleY);
-
-    canvasContext.setTransform(1, 0, 0, 1, 0, 0);
-    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-    canvasContext.scale(scaleX, scaleY);
-
-    // scale canvas operations by the dpr factor
-    canvasContext.scale(devicePixelRatio, devicePixelRatio);
-
-    const black = (pc: number) => `rgba(0,0,0,${pc / 100})`;
-    const back = black(0);
-
-    const drawRect = (
-      rect: {x: number; y: number; width: number; height: number},
-      colour: string
-    ) => {
-      if (colour) {
-        canvasContext.beginPath();
-        canvasContext.rect(rect.x, rect.y, rect.width, rect.height);
-        canvasContext.fillStyle = colour;
-        canvasContext.fill();
-      }
-    };
-
-    // draw background
-
-    drawRect(rectRelativeTo(rootRect, rootRect), back);
-
-    // draw the spans
-
-    Array.from(traceViewDOM.querySelectorAll<HTMLElement>('[data-span="true"]')).forEach(
-      el => {
-        const backgroundColor = window.getComputedStyle(el).backgroundColor || black(10);
-        drawRect(rectRelativeTo(rectOfElement(el), rootRect), backgroundColor);
-      }
-    );
   };
 
   renderMinimapCursorGuide = () => {
@@ -275,13 +190,13 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
       return null;
     }
 
-    const minimapCanvas = this.props.minimapInteractiveRef.current;
+    const interactiveLayer = this.props.minimapInteractiveRef.current;
 
-    if (!minimapCanvas) {
+    if (!interactiveLayer) {
       return null;
     }
 
-    const rect = rectOfContent(minimapCanvas);
+    const rect = rectOfContent(interactiveLayer);
 
     // clamp mouseLeft to be within [0, 1]
     const mouseLeft = clamp((this.state.mousePageX - rect.x) / rect.width, 0, 1);
@@ -417,7 +332,7 @@ class Minimap extends React.Component<MinimapProps, MinimapState> {
     return (
       <React.Fragment>
         <MinimapContainer>
-          <MinimapBackground innerRef={this.minimapRef} />
+          <MinimapBackground />
           <div
             ref={this.props.minimapInteractiveRef}
             style={{
@@ -578,6 +493,8 @@ const MinimapContainer = styled('div')`
   border-bottom: 1px solid #d1cad8;
 
   height: ${MINIMAP_HEIGHT + TIME_AXIS_HEIGHT + 1}px;
+
+  outline: 1px solid magenta;
 `;
 
 const MinimapBackground = styled('canvas')`
