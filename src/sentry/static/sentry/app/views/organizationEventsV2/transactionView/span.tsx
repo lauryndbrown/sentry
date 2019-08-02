@@ -347,8 +347,11 @@ class Span extends React.Component<PropType, State> {
           // invariant: spanNumber >= 1
 
           const numberOfMovedSpans = spanNumber - 1;
+          const totalHeightOfHiddenSpans = numberOfMovedSpans * MINIMAP_SPAN_BAR_HEIGHT;
+          const currentSpanHiddenRatio = 1 - entry.intersectionRatio;
 
-          const panYPixels = numberOfMovedSpans * MINIMAP_SPAN_BAR_HEIGHT;
+          const panYPixels =
+            totalHeightOfHiddenSpans + currentSpanHiddenRatio * MINIMAP_SPAN_BAR_HEIGHT;
 
           console.log('panYPixels', panYPixels);
         });
