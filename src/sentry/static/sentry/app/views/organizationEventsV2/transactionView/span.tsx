@@ -301,7 +301,17 @@ class Span extends React.Component<PropType, State> {
     this.intersectionObserver = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          const spanNumber = entry.target.getAttribute('data-span-number');
+          const spanNumberRaw = entry.target.getAttribute('data-span-number');
+
+          if (typeof spanNumberRaw !== 'string') {
+            return;
+          }
+
+          const spanNumber = Number(spanNumberRaw);
+
+          if (!isFinite(spanNumber)) {
+            return;
+          }
 
           // console.log('entry', entry, entry.target);
 
@@ -331,7 +341,16 @@ class Span extends React.Component<PropType, State> {
             return;
           }
 
-          console.log('entry', spanNumber);
+          // TODO: move this
+          const MINIMAP_SPAN_BAR_HEIGHT = 5;
+
+          // invariant: spanNumber >= 1
+
+          const numberOfMovedSpans = spanNumber - 1;
+
+          const panYPixels = numberOfMovedSpans * MINIMAP_SPAN_BAR_HEIGHT;
+
+          console.log('panYPixels', panYPixels);
         });
       },
       {
