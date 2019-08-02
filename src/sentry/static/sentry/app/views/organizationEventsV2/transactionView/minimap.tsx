@@ -75,112 +75,112 @@ class Minimap extends React.Component<PropType, StateType> {
     );
   };
 
-  renderViewHandles = ({
-    isDragging,
-    onLeftHandleDragStart,
-    leftHandlePosition,
-    viewWindowStart,
-    onRightHandleDragStart,
-    rightHandlePosition,
-    viewWindowEnd,
-  }: DragManagerChildrenProps) => {
-    const leftHandleGhost = isDragging ? (
-      <g>
-        <line
-          x1={toPercent(viewWindowStart)}
-          x2={toPercent(viewWindowStart)}
-          y1="0"
-          y2={MINIMAP_HEIGHT - 20}
-          strokeWidth="1"
-          strokeDasharray="4 3"
-          style={{stroke: '#6C5FC7'}}
-          opacity="0.5"
-        />
-        <ViewHandle
-          x={toPercent(viewWindowStart)}
-          onMouseDown={onLeftHandleDragStart}
-          isDragging={false}
-          opacity="0.5"
-          height="20px"
-          width="3px"
-        />
-      </g>
-    ) : null;
+  // renderViewHandles = ({
+  //   isDragging,
+  //   onLeftHandleDragStart,
+  //   leftHandlePosition,
+  //   viewWindowStart,
+  //   onRightHandleDragStart,
+  //   rightHandlePosition,
+  //   viewWindowEnd,
+  // }: DragManagerChildrenProps) => {
+  //   const leftHandleGhost = isDragging ? (
+  //     <g>
+  //       <line
+  //         x1={toPercent(viewWindowStart)}
+  //         x2={toPercent(viewWindowStart)}
+  //         y1="0"
+  //         y2={MINIMAP_HEIGHT - 20}
+  //         strokeWidth="1"
+  //         strokeDasharray="4 3"
+  //         style={{stroke: '#6C5FC7'}}
+  //         opacity="0.5"
+  //       />
+  //       <ViewHandle
+  //         x={toPercent(viewWindowStart)}
+  //         onMouseDown={onLeftHandleDragStart}
+  //         isDragging={false}
+  //         opacity="0.5"
+  //         height="20px"
+  //         width="3px"
+  //       />
+  //     </g>
+  //   ) : null;
 
-    const leftHandle = (
-      <g>
-        <line
-          x1={toPercent(leftHandlePosition)}
-          x2={toPercent(leftHandlePosition)}
-          y1="0"
-          y2={MINIMAP_HEIGHT - 20}
-          strokeWidth="1"
-          strokeDasharray="4 3"
-          style={{stroke: '#6C5FC7'}}
-        />
-        <ViewHandle
-          x={toPercent(leftHandlePosition)}
-          onMouseDown={onLeftHandleDragStart}
-          isDragging={isDragging}
-          height="20px"
-          width="3px"
-        />
-      </g>
-    );
+  //   const leftHandle = (
+  //     <g>
+  //       <line
+  //         x1={toPercent(leftHandlePosition)}
+  //         x2={toPercent(leftHandlePosition)}
+  //         y1="0"
+  //         y2={MINIMAP_HEIGHT - 20}
+  //         strokeWidth="1"
+  //         strokeDasharray="4 3"
+  //         style={{stroke: '#6C5FC7'}}
+  //       />
+  //       <ViewHandle
+  //         x={toPercent(leftHandlePosition)}
+  //         onMouseDown={onLeftHandleDragStart}
+  //         isDragging={isDragging}
+  //         height="20px"
+  //         width="3px"
+  //       />
+  //     </g>
+  //   );
 
-    const rightHandle = (
-      <g>
-        <line
-          x1={toPercent(rightHandlePosition)}
-          x2={toPercent(rightHandlePosition)}
-          y1="0"
-          y2={MINIMAP_HEIGHT - 20}
-          strokeWidth="1"
-          strokeDasharray="4 3"
-          style={{stroke: '#6C5FC7'}}
-        />
-        <ViewHandle
-          x={toPercent(rightHandlePosition)}
-          onMouseDown={onRightHandleDragStart}
-          isDragging={isDragging}
-          height="20px"
-          width="3px"
-        />
-      </g>
-    );
+  //   const rightHandle = (
+  //     <g>
+  //       <line
+  //         x1={toPercent(rightHandlePosition)}
+  //         x2={toPercent(rightHandlePosition)}
+  //         y1="0"
+  //         y2={MINIMAP_HEIGHT - 20}
+  //         strokeWidth="1"
+  //         strokeDasharray="4 3"
+  //         style={{stroke: '#6C5FC7'}}
+  //       />
+  //       <ViewHandle
+  //         x={toPercent(rightHandlePosition)}
+  //         onMouseDown={onRightHandleDragStart}
+  //         isDragging={isDragging}
+  //         height="20px"
+  //         width="3px"
+  //       />
+  //     </g>
+  //   );
 
-    const rightHandleGhost = isDragging ? (
-      <g>
-        <line
-          x1={toPercent(viewWindowEnd)}
-          x2={toPercent(viewWindowEnd)}
-          y1="0"
-          y2={MINIMAP_HEIGHT - 20}
-          strokeWidth="1"
-          strokeDasharray="4 3"
-          style={{stroke: '#6C5FC7'}}
-          opacity="0.5"
-        />
-        <ViewHandle
-          x={toPercent(viewWindowEnd)}
-          onMouseDown={onLeftHandleDragStart}
-          isDragging={false}
-          opacity="0.5"
-          height="20px"
-          width="3px"
-        />
-      </g>
-    ) : null;
+  //   const rightHandleGhost = isDragging ? (
+  //     <g>
+  //       <line
+  //         x1={toPercent(viewWindowEnd)}
+  //         x2={toPercent(viewWindowEnd)}
+  //         y1="0"
+  //         y2={MINIMAP_HEIGHT - 20}
+  //         strokeWidth="1"
+  //         strokeDasharray="4 3"
+  //         style={{stroke: '#6C5FC7'}}
+  //         opacity="0.5"
+  //       />
+  //       <ViewHandle
+  //         x={toPercent(viewWindowEnd)}
+  //         onMouseDown={onLeftHandleDragStart}
+  //         isDragging={false}
+  //         opacity="0.5"
+  //         height="20px"
+  //         width="3px"
+  //       />
+  //     </g>
+  //   ) : null;
 
-    return (
-      <React.Fragment>
-        {leftHandleGhost}
-        {rightHandleGhost}
-        {leftHandle}
-        {rightHandle}
-      </React.Fragment>
-    );
-  };
+  //   return (
+  //     <React.Fragment>
+  //       {leftHandleGhost}
+  //       {rightHandleGhost}
+  //       {leftHandle}
+  //       {rightHandle}
+  //     </React.Fragment>
+  //   );
+  // };
 
   renderFog = (dragProps: DragManagerChildrenProps) => {
     return (
@@ -467,10 +467,10 @@ class Minimap extends React.Component<PropType, StateType> {
               });
             }}
           >
-            <InteractiveLayer style={{overflow: 'visible'}}>
+            <InteractiveLayer>
               {this.renderFog(this.props.dragProps)}
               {this.renderMinimapCursorGuide()}
-              {this.renderViewHandles(this.props.dragProps)}
+              {/*this.renderViewHandles(this.props.dragProps)*/}
             </InteractiveLayer>
             {this.renderTimeAxis()}
           </div>
@@ -617,36 +617,34 @@ const InteractiveLayer = styled('div')`
   width: 100%;
   position: relative;
   left: 0;
-
-  display: flex;
 `;
 
-const ViewHandle = styled('rect')`
-  fill: #6c5fc7;
+// const ViewHandle = styled('rect')`
+//   fill: #6c5fc7;
 
-  cursor: col-resize;
+//   cursor: col-resize;
 
-  height: 20px;
+//   height: 20px;
 
-  ${({isDragging}: {isDragging: boolean}) => {
-    if (isDragging) {
-      return `
-      width: 5px;
-      transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
-      `;
-    }
+//   ${({isDragging}: {isDragging: boolean}) => {
+//     if (isDragging) {
+//       return `
+//       width: 5px;
+//       transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
+//       `;
+//     }
 
-    return `
-    width: 3px;
-    transform: translate(-1.5px, ${MINIMAP_HEIGHT - 20}px);
-    `;
-  }};
+//     return `
+//     width: 3px;
+//     transform: translate(-1.5px, ${MINIMAP_HEIGHT - 20}px);
+//     `;
+//   }};
 
-  &:hover {
-    width: 5px;
-    transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
-  }
-`;
+//   &:hover {
+//     width: 5px;
+//     transform: translate(-2.5px, ${MINIMAP_HEIGHT - 20}px);
+//   }
+// `;
 
 const Fog = styled('div')`
   background-color: rgba(241, 245, 251, 0.5);
@@ -672,7 +670,7 @@ const CursorGuide = styled('div')`
   width: 1px;
   background-color: #e03e2f;
 
-  transform: translateX(-50%);
+  transform: translateX(-0.5px);
 `;
 
 export default Minimap;
