@@ -325,7 +325,9 @@ class Span extends React.Component<PropType, State> {
           const rectBelowMinimap =
             relativeToMinimap.top > 0 && relativeToMinimap.bottom > 0;
 
-          if (rectBelowMinimap || relativeToMinimap.bottom <= 0) {
+          const inAndAboveMinimap = relativeToMinimap.bottom <= 0;
+
+          if (rectBelowMinimap || inAndAboveMinimap) {
             return;
           }
 
