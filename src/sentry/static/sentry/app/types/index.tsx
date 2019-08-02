@@ -3,12 +3,14 @@ export type Organization = {
   slug: string;
   projects: Project[];
   access: string[];
+  features: string[];
 };
 
 export type Project = {
   id: string;
   slug: string;
   isMember: boolean;
+  features: string[];
 };
 
 // This type is incomplete
