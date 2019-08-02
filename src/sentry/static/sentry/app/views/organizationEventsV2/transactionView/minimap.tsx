@@ -22,6 +22,8 @@ import {ParsedTraceType, TickAlignment, SpanType, SpanChildrenLookupType} from '
 export const MINIMAP_CONTAINER_HEIGHT = 106;
 export const MINIMAP_SPAN_BAR_HEIGHT = 5;
 const MINIMAP_HEIGHT = 75;
+export const MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP =
+  MINIMAP_HEIGHT / MINIMAP_SPAN_BAR_HEIGHT + 1;
 const TIME_AXIS_HEIGHT = 30;
 
 type PropType = {
@@ -29,7 +31,6 @@ type PropType = {
   minimapInteractiveRef: React.RefObject<HTMLDivElement>;
   dragProps: DragManagerChildrenProps;
   trace: ParsedTraceType;
-  panYMinimap: number;
 };
 
 type StateType = {
@@ -440,7 +441,7 @@ class Minimap extends React.Component<PropType, StateType> {
       <React.Fragment>
         <MinimapContainer>
           <MinimapBackground>
-            <BackgroundSlider panYMinimap={this.props.panYMinimap}>
+            <BackgroundSlider id="minimap-background-slider">
               {this.drawMinimap()}
             </BackgroundSlider>
           </MinimapBackground>
@@ -607,7 +608,7 @@ const MinimapContainer = styled('div')`
 const MinimapBackground = styled('div')`
   height: ${MINIMAP_HEIGHT}px;
   max-height: ${MINIMAP_HEIGHT}px;
-  overflow: hidden;
+  overflow-y: hidden;
   width: 100%;
   position: absolute;
   top: 0;
@@ -661,10 +662,6 @@ const MinimapSpanBar = styled('div')`
 
 const BackgroundSlider = styled('div')`
   position: relative;
-
-  ${({panYMinimap}: {panYMinimap: number}) => {
-    return `transform: translateY(-${panYMinimap}px);`;
-  }};
 `;
 
 export default Minimap;

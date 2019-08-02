@@ -29,6 +29,7 @@ export type ParsedTraceType = {
   rootSpanID: string;
   traceStartTimestamp: number;
   traceEndTimestamp: number;
+  numOfSpans: number;
 };
 
 export enum TickAlignment {

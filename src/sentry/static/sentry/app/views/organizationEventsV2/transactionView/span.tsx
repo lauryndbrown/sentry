@@ -8,7 +8,11 @@ import Count from 'app/components/count';
 import Tooltip from 'app/components/tooltip';
 
 import {SPAN_ROW_HEIGHT, SpanRow} from './styles';
-import {MINIMAP_CONTAINER_HEIGHT, MINIMAP_SPAN_BAR_HEIGHT} from './minimap';
+import {
+  MINIMAP_CONTAINER_HEIGHT,
+  MINIMAP_SPAN_BAR_HEIGHT,
+  MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP,
+} from './minimap';
 
 import {
   toPercent,
@@ -18,12 +22,13 @@ import {
   parseSpanTimestamps,
   TimestampStatus,
 } from './utils';
-import {SpanType} from './types';
+import {SpanType, ParsedTraceType} from './types';
 import {DividerHandlerManagerChildrenProps} from './dividerHandlerManager';
 import SpanDetail from './spanDetail';
 
 type PropType = {
   span: Readonly<SpanType>;
+  trace: Readonly<ParsedTraceType>;
   generateBounds: (bounds: SpanBoundsType) => SpanGeneratedBoundsType;
   treeDepth: number;
   numOfSpanChildren: number;
@@ -32,8 +37,6 @@ type PropType = {
   spanNumber: number;
 
   dividerHandlerChildrenProps: DividerHandlerManagerChildrenProps;
-
-  panMinimapVertically: (panYValue: number) => void;
 };
 
 type State = {
@@ -141,7 +144,6 @@ class Span extends React.Component<PropType, State> {
       <SpanBarTitleContainer>
         {this.renderSpanTreeToggler({left})}
         <SpanBarTitle
-          data-component="span-bar-title"
           style={{
             left: `${left}px`,
             width: '100%',
@@ -302,6 +304,13 @@ class Span extends React.Component<PropType, State> {
     this.intersectionObserver = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
+          const shouldMoveMinimap =
+            this.props.trace.numOfSpans >= MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP;
+
+          if (!shouldMoveMinimap) {
+            return;
+          }
+
           const spanNumberRaw = entry.target.getAttribute('data-span-number');
 
           if (typeof spanNumberRaw !== 'string') {
@@ -351,7 +360,13 @@ class Span extends React.Component<PropType, State> {
           const panYPixels =
             totalHeightOfHiddenSpans + currentSpanHiddenRatio * MINIMAP_SPAN_BAR_HEIGHT;
 
-          this.props.panMinimapVertically(panYPixels);
+          const minimapSlider = document.getElementById('minimap-background-slider');
+
+          if (!minimapSlider) {
+            return;
+          }
+
+          minimapSlider.style.top = `-${panYPixels}px`;
         });
       },
       {
