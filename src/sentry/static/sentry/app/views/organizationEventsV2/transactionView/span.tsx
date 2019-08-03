@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'react-emotion';
 import {get} from 'lodash';
+import 'intersection-observer';
 
 import {t} from 'app/locale';
 import space from 'app/styles/space';
