@@ -31,6 +31,14 @@ type PropType = {
 };
 
 class SpanTree extends React.Component<PropType> {
+  shouldComponentUpdate(nextProps: PropType) {
+    if (nextProps.dragProps.isDragging) {
+      return false;
+    }
+
+    return true;
+  }
+
   renderSpan = ({
     spanNumber,
     treeDepth,
@@ -175,6 +183,8 @@ class SpanTree extends React.Component<PropType> {
   };
 
   render() {
+    console.log('render');
+
     return (
       <DividerHandlerManager interactiveLayerRef={this.props.traceViewRef}>
         {(dividerHandlerChildrenProps: DividerHandlerManagerChildrenProps) => {
