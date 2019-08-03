@@ -22,8 +22,7 @@ import {ParsedTraceType, TickAlignment, SpanType, SpanChildrenLookupType} from '
 export const MINIMAP_CONTAINER_HEIGHT = 106;
 export const MINIMAP_SPAN_BAR_HEIGHT = 5;
 const MINIMAP_HEIGHT = 75;
-export const MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP =
-  MINIMAP_HEIGHT / MINIMAP_SPAN_BAR_HEIGHT + 1;
+export const NUM_OF_SPANS_FIT_IN_MINI_MAP = MINIMAP_HEIGHT / MINIMAP_SPAN_BAR_HEIGHT;
 const TIME_AXIS_HEIGHT = 30;
 
 type PropType = {

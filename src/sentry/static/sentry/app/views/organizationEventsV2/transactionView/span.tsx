@@ -11,7 +11,7 @@ import {SPAN_ROW_HEIGHT, SpanRow} from './styles';
 import {
   MINIMAP_CONTAINER_HEIGHT,
   MINIMAP_SPAN_BAR_HEIGHT,
-  MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP,
+  NUM_OF_SPANS_FIT_IN_MINI_MAP,
 } from './minimap';
 
 import {
@@ -305,7 +305,7 @@ class Span extends React.Component<PropType, State> {
       entries => {
         entries.forEach(entry => {
           const shouldMoveMinimap =
-            this.props.trace.numOfSpans >= MIN_NUM_OF_SPANS_TO_MOVE_MINIMAP;
+            this.props.trace.numOfSpans > NUM_OF_SPANS_FIT_IN_MINI_MAP;
 
           if (!shouldMoveMinimap) {
             return;
@@ -375,6 +375,17 @@ class Span extends React.Component<PropType, State> {
 
           const panYPixels =
             totalHeightOfHiddenSpans + currentSpanHiddenRatio * MINIMAP_SPAN_BAR_HEIGHT;
+
+          // invariant: this.props.trace.numOfSpansend - spanNumberToStopMoving + 1 = NUM_OF_SPANS_FIT_IN_MINI_MAP
+
+          const spanNumberToStopMoving =
+            this.props.trace.numOfSpans + 1 - NUM_OF_SPANS_FIT_IN_MINI_MAP;
+
+          if (spanNumber > spanNumberToStopMoving) {
+            minimapSlider.style.top = `-${spanNumberToStopMoving *
+              MINIMAP_SPAN_BAR_HEIGHT}px`;
+            return;
+          }
 
           minimapSlider.style.top = `-${panYPixels}px`;
         });
