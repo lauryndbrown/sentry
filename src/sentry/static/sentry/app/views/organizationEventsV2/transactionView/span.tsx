@@ -323,6 +323,12 @@ class Span extends React.Component<PropType, State> {
             return;
           }
 
+          const minimapSlider = document.getElementById('minimap-background-slider');
+
+          if (!minimapSlider) {
+            return;
+          }
+
           // console.log('entry', entry, entry.target);
 
           // root refers to the root intersection rectangle used for the IntersectionObserver
@@ -345,9 +351,19 @@ class Span extends React.Component<PropType, State> {
           const rectBelowMinimap =
             relativeToMinimap.top > 0 && relativeToMinimap.bottom > 0;
 
+          if (rectBelowMinimap) {
+            // if the first span is below the minimap, we scroll the minimap
+            // to the top. this addresss spurious scrolling to the top of the page
+            if (spanNumber <= 1) {
+              minimapSlider.style.top = `0px`;
+              return;
+            }
+            return;
+          }
+
           const inAndAboveMinimap = relativeToMinimap.bottom <= 0;
 
-          if (rectBelowMinimap || inAndAboveMinimap) {
+          if (inAndAboveMinimap) {
             return;
           }
 
@@ -359,12 +375,6 @@ class Span extends React.Component<PropType, State> {
 
           const panYPixels =
             totalHeightOfHiddenSpans + currentSpanHiddenRatio * MINIMAP_SPAN_BAR_HEIGHT;
-
-          const minimapSlider = document.getElementById('minimap-background-slider');
-
-          if (!minimapSlider) {
-            return;
-          }
 
           minimapSlider.style.top = `-${panYPixels}px`;
         });
