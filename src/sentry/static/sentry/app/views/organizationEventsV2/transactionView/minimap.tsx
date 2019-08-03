@@ -78,126 +78,47 @@ class Minimap extends React.Component<PropType, StateType> {
     leftHandlePosition,
     onRightHandleDragStart,
     rightHandlePosition,
-  }: // viewWindowStart,
-  // viewWindowEnd,
-  DragManagerChildrenProps) => {
-    // const leftHandleGhost = isDragging ? (
-    //   <g>
-    //     <line
-    //       x1={toPercent(viewWindowStart)}
-    //       x2={toPercent(viewWindowStart)}
-    //       y1="0"
-    //       y2={MINIMAP_HEIGHT - 20}
-    //       strokeWidth="1"
-    //       strokeDasharray="4 3"
-    //       style={{stroke: '#6C5FC7'}}
-    //       opacity="0.5"
-    //     />
-    //     <ViewHandle
-    //       x={toPercent(viewWindowStart)}
-    //       onMouseDown={onLeftHandleDragStart}
-    //       isDragging={false}
-    //       opacity="0.5"
-    //       height="20px"
-    //       width="3px"
-    //     />
-    //   </g>
-    // ) : null;
-
-    // const leftHandle = (
-    //   <g>
-    //     <line
-    //       x1={toPercent(leftHandlePosition)}
-    //       x2={toPercent(leftHandlePosition)}
-    //       y1="0"
-    //       y2={MINIMAP_HEIGHT - 20}
-    //       strokeWidth="1"
-    //       strokeDasharray="4 3"
-    //       style={{stroke: '#6C5FC7'}}
-    //     />
-    //     <ViewHandle
-    //       x={toPercent(leftHandlePosition)}
-    //       onMouseDown={onLeftHandleDragStart}
-    //       isDragging={isDragging}
-    //       height="20px"
-    //       width="3px"
-    //     />
-    //   </g>
-    // );
+    viewWindowStart,
+    viewWindowEnd,
+  }: DragManagerChildrenProps) => {
+    const leftHandleGhost = isDragging ? (
+      <Handle
+        left={viewWindowStart}
+        onMouseDown={onLeftHandleDragStart}
+        isDragging={false}
+      />
+    ) : null;
 
     const leftHandle = (
-      <ViewHandle
+      <Handle
+        left={leftHandlePosition}
         onMouseDown={onLeftHandleDragStart}
         isDragging={isDragging}
-        style={{
-          height: '20px',
-          left: toPercent(leftHandlePosition),
-        }}
       />
     );
 
     const rightHandle = (
-      <ViewHandle
+      <Handle
+        left={rightHandlePosition}
         onMouseDown={onRightHandleDragStart}
         isDragging={isDragging}
-        style={{
-          height: '20px',
-          left: toPercent(rightHandlePosition),
-        }}
       />
     );
 
-    // const rightHandle = (
-    //   <g>
-    //     <line
-    //       x1={toPercent(rightHandlePosition)}
-    //       x2={toPercent(rightHandlePosition)}
-    //       y1="0"
-    //       y2={MINIMAP_HEIGHT - 20}
-    //       strokeWidth="1"
-    //       strokeDasharray="4 3"
-    //       style={{stroke: '#6C5FC7'}}
-    //     />
-    //     <ViewHandle
-    //       x={toPercent(rightHandlePosition)}
-    //       onMouseDown={onRightHandleDragStart}
-    //       isDragging={isDragging}
-    //       height="20px"
-    //       width="3px"
-    //     />
-    //   </g>
-    // );
-
-    // const rightHandleGhost = isDragging ? (
-    //   <g>
-    //     <line
-    //       x1={toPercent(viewWindowEnd)}
-    //       x2={toPercent(viewWindowEnd)}
-    //       y1="0"
-    //       y2={MINIMAP_HEIGHT - 20}
-    //       strokeWidth="1"
-    //       strokeDasharray="4 3"
-    //       style={{stroke: '#6C5FC7'}}
-    //       opacity="0.5"
-    //     />
-    //     <ViewHandle
-    //       x={toPercent(viewWindowEnd)}
-    //       onMouseDown={onLeftHandleDragStart}
-    //       isDragging={false}
-    //       opacity="0.5"
-    //       height="20px"
-    //       width="3px"
-    //     />
-    //   </g>
-    // ) : null;
+    const rightHandleGhost = isDragging ? (
+      <Handle
+        left={viewWindowEnd}
+        onMouseDown={onLeftHandleDragStart}
+        isDragging={false}
+      />
+    ) : null;
 
     return (
       <React.Fragment>
+        {leftHandleGhost}
+        {rightHandleGhost}
         {leftHandle}
         {rightHandle}
-        {/* {rightHandleGhost}
-        {leftHandle}
-        {rightHandle} */}
       </React.Fragment>
     );
   };
@@ -603,6 +524,13 @@ const InteractiveLayer = styled('div')`
   left: 0;
 `;
 
+const ViewHandleContainer = styled('div')`
+  position: absolute;
+  top: 0;
+
+  height: ${MINIMAP_HEIGHT}px;
+`;
+
 const ViewHandle = styled('div')`
   position: absolute;
   top: 0;
@@ -658,5 +586,47 @@ const CursorGuide = styled('div')`
 
   transform: translateX(-50%);
 `;
+
+const Handle = ({
+  left,
+  onMouseDown,
+  isDragging,
+}: {
+  left: number;
+  onMouseDown: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+  isDragging: boolean;
+}) => {
+  return (
+    <ViewHandleContainer
+      style={{
+        left: toPercent(left),
+      }}
+    >
+      <svg
+        width={1}
+        height={MINIMAP_HEIGHT - 20}
+        fill="none"
+        style={{width: '1px', overflow: 'visible'}}
+      >
+        <line
+          x1="0"
+          x2="0"
+          y1="0"
+          y2={MINIMAP_HEIGHT - 20}
+          strokeWidth="1"
+          strokeDasharray="4 3"
+          style={{stroke: '#6C5FC7'}}
+        />
+      </svg>
+      <ViewHandle
+        onMouseDown={onMouseDown}
+        isDragging={isDragging}
+        style={{
+          height: '20px',
+        }}
+      />
+    </ViewHandleContainer>
+  );
+};
 
 export default Minimap;
