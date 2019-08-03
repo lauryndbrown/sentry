@@ -382,6 +382,8 @@ class Span extends React.Component<PropType, State> {
             this.props.trace.numOfSpans + 1 - NUM_OF_SPANS_FIT_IN_MINI_MAP;
 
           if (spanNumber > spanNumberToStopMoving) {
+            // if the last span bar appears on the minimap, we do not want the minimap
+            // to keep panning upwards
             minimapSlider.style.top = `-${spanNumberToStopMoving *
               MINIMAP_SPAN_BAR_HEIGHT}px`;
             return;
