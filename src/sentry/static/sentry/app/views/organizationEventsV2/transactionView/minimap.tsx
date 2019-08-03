@@ -46,30 +46,27 @@ class Minimap extends React.Component<PropType, StateType> {
     startViewHandleX: 100,
   };
 
-  renderMinimapCursorGuide = () => {
+  renderCursorGuide = (cursorGuideHeight: number) => {
     if (!this.state.showCursorGuide || !this.state.mousePageX) {
       return null;
     }
 
-    const minimapCanvas = this.props.minimapInteractiveRef.current;
+    const interactiveLayer = this.props.minimapInteractiveRef.current;
 
-    if (!minimapCanvas) {
+    if (!interactiveLayer) {
       return null;
     }
 
-    const rect = rectOfContent(minimapCanvas);
+    const rect = rectOfContent(interactiveLayer);
 
-    // clamp mouseLeft to be within [0, 100]
-    const mouseLeft = clamp(
-      ((this.state.mousePageX - rect.x) / rect.width) * 100,
-      0,
-      100
-    );
+    // clamp mouseLeft to be within [0, 1]
+    const mouseLeft = clamp((this.state.mousePageX - rect.x) / rect.width, 0, 1);
 
     return (
       <CursorGuide
         style={{
-          left: `${mouseLeft}%`,
+          left: toPercent(mouseLeft),
+          height: `${cursorGuideHeight}px`,
         }}
       />
     );
@@ -313,53 +310,9 @@ class Minimap extends React.Component<PropType, StateType> {
         {thirdTick}
         {fourthTick}
         {lastTick}
-        <svg
-          style={{
-            position: 'relative',
-            left: 0,
-            top: 0,
-            width: '100%',
-            height: `${TIME_AXIS_HEIGHT}px`,
-            overflow: 'visible',
-          }}
-        >
-          {this.renderTimeAxisCursorGuide()}
-        </svg>
+        {this.renderCursorGuide(TIME_AXIS_HEIGHT)}
         {this.renderDurationGuide()}
       </TimeAxis>
-    );
-  };
-
-  renderTimeAxisCursorGuide = () => {
-    if (!this.state.showCursorGuide || !this.state.mousePageX) {
-      return null;
-    }
-
-    const minimapCanvas = this.props.minimapInteractiveRef.current;
-
-    if (!minimapCanvas) {
-      return null;
-    }
-
-    const rect = rectOfContent(minimapCanvas);
-
-    // clamp mouseLeft to be within [0, 100]
-    const mouseLeft = clamp(
-      ((this.state.mousePageX - rect.x) / rect.width) * 100,
-      0,
-      100
-    );
-
-    return (
-      <line
-        x1={`${mouseLeft}%`}
-        x2={`${mouseLeft}%`}
-        y1="0"
-        y2={TIME_AXIS_HEIGHT}
-        strokeWidth="1"
-        strokeOpacity="0.7"
-        style={{stroke: '#E03E2F'}}
-      />
     );
   };
 
@@ -395,7 +348,7 @@ class Minimap extends React.Component<PropType, StateType> {
           >
             <InteractiveLayer>
               {this.renderFog(this.props.dragProps)}
-              {this.renderMinimapCursorGuide()}
+              {this.renderCursorGuide(MINIMAP_HEIGHT)}
               {this.renderViewHandles(this.props.dragProps)}
             </InteractiveLayer>
             {this.renderTimeAxis()}
@@ -700,7 +653,6 @@ const BackgroundSlider = styled('div')`
 const CursorGuide = styled('div')`
   position: absolute;
   top: 0;
-  height: ${MINIMAP_HEIGHT}px;
   width: 1px;
   background-color: #e03e2f;
 
