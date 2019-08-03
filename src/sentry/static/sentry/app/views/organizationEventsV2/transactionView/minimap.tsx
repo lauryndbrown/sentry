@@ -363,6 +363,50 @@ class Minimap extends React.Component<PropType, StateType> {
     );
   };
 
+  render() {
+    return (
+      <React.Fragment>
+        <MinimapContainer>
+          <ActualMinimap trace={this.props.trace} />
+          <div
+            ref={this.props.minimapInteractiveRef}
+            style={{
+              width: '100%',
+              height: `${MINIMAP_HEIGHT + TIME_AXIS_HEIGHT}px`,
+              position: 'absolute',
+              left: 0,
+              top: 0,
+            }}
+            onMouseEnter={event => {
+              this.setState({
+                showCursorGuide: true,
+                mousePageX: event.pageX,
+              });
+            }}
+            onMouseLeave={() => {
+              this.setState({showCursorGuide: false, mousePageX: void 0});
+            }}
+            onMouseMove={event => {
+              this.setState({
+                showCursorGuide: true,
+                mousePageX: event.pageX,
+              });
+            }}
+          >
+            <InteractiveLayer>
+              {this.renderFog(this.props.dragProps)}
+              {this.renderMinimapCursorGuide()}
+              {this.renderViewHandles(this.props.dragProps)}
+            </InteractiveLayer>
+            {this.renderTimeAxis()}
+          </div>
+        </MinimapContainer>
+      </React.Fragment>
+    );
+  }
+}
+
+class ActualMinimap extends React.PureComponent<{trace: ParsedTraceType}> {
   drawMinimap = () => {
     return this.renderRootSpan();
   };
@@ -458,47 +502,11 @@ class Minimap extends React.Component<PropType, StateType> {
 
   render() {
     return (
-      <React.Fragment>
-        <MinimapContainer>
-          <MinimapBackground>
-            <BackgroundSlider id="minimap-background-slider">
-              {this.drawMinimap()}
-            </BackgroundSlider>
-          </MinimapBackground>
-          <div
-            ref={this.props.minimapInteractiveRef}
-            style={{
-              width: '100%',
-              height: `${MINIMAP_HEIGHT + TIME_AXIS_HEIGHT}px`,
-              position: 'absolute',
-              left: 0,
-              top: 0,
-            }}
-            onMouseEnter={event => {
-              this.setState({
-                showCursorGuide: true,
-                mousePageX: event.pageX,
-              });
-            }}
-            onMouseLeave={() => {
-              this.setState({showCursorGuide: false, mousePageX: void 0});
-            }}
-            onMouseMove={event => {
-              this.setState({
-                showCursorGuide: true,
-                mousePageX: event.pageX,
-              });
-            }}
-          >
-            <InteractiveLayer>
-              {this.renderFog(this.props.dragProps)}
-              {this.renderMinimapCursorGuide()}
-              {this.renderViewHandles(this.props.dragProps)}
-            </InteractiveLayer>
-            {this.renderTimeAxis()}
-          </div>
-        </MinimapContainer>
-      </React.Fragment>
+      <MinimapBackground>
+        <BackgroundSlider id="minimap-background-slider">
+          {this.drawMinimap()}
+        </BackgroundSlider>
+      </MinimapBackground>
     );
   }
 }
